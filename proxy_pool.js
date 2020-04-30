@@ -127,7 +127,7 @@ const Proxys = function (ip, port, type) {
 };
 
 //提取所有ip，通过check函数检查
-const runIp = async function () {
+const runIp = function () {
   allIp((err, response) => {
     if (err) console.log("查询错误", err);
     else {
