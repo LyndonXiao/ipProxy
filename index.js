@@ -52,7 +52,7 @@ app.all("/", (req, res) => {
     } else {
       if (ips.length <= 0) {
         console.log("no proxy ip");
-        // proxy.run();
+        proxy.run();
 
         requestUrl(options, (statusCode, body) => {
           res.status(statusCode).send(body).end();

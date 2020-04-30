@@ -111,7 +111,11 @@ const ipUrl = function (resolve) {
 const allIp = function (callback, type) {
   if (type) {
     console.log("type", type);
-    return db.all("select * from proxy where type = ?", [type], callback);
+    return db.all(
+      "select * from proxy where type = ?",
+      [type],
+      callback
+    );
   } else return db.all("select * from proxy", callback);
 };
 
@@ -178,7 +182,7 @@ exports.run = async function () {
 };
 
 exports.check = function () {
-   return await runIp();
+    runIp();
 };
 
 exports.ips = function (type, callback = null) {
