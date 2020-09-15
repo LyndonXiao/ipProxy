@@ -79,7 +79,7 @@ const requestProxy = function (options) {
         loadHtml(body);
         resolve();
       } else {
-        console.log("链接失败", response.statusCode, err);
+        console.log("链接失败", response, err);
         resolve();
       }
     });
