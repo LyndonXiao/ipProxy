@@ -88,7 +88,7 @@ const requestProxy = function (options) {
 
 //生成网址
 const ipUrl = function (resolve) {
-  const url = "http://www.xicidaili.com/nn/";
+  const url = "https://www.kuaidaili.com/free/inha/";
 
   let options = {
     url: url,
