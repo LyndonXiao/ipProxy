@@ -110,20 +110,19 @@ const ipUrl = function (resolve) {
 const ipFetch = function () {
   const url = "http://proxylist.fatezero.org/proxy.list"
 
+  const options = {
+    url: url,
+    method: "GET",
+    headers,
+  }
+  console.log("爬取ip中...")
   return new Promise((resolve, reject) => {
-    let options = {
-      url: url,
-      method: "GET",
-      headers,
-    }
-    console.log("爬取ip中")
     request(options, function (err, response, body) {
       if (err === null && response.statusCode === 200) {
         body
           .toString()
           .split("\n")
           .forEach(function (i) {
-            console.log("===> ", i)
             if (i) {
               const j = JSON.parse(i)
               const { host: ip, port, type } = j
@@ -147,10 +146,6 @@ const ipFetch = function () {
         resolve()
       }
     })
-
-    Promise.all(arr).then(function () {
-      resolve()
-    })
   })
 }
 
@@ -171,6 +166,7 @@ const Proxys = function (ip, port, type) {
 
 //提取所有ip，通过check函数检查
 const runIp = function () {
+  console.log('检查ip中...');
   allIp((err, response) => {
     if (err) console.log("查询错误", err)
     else {
