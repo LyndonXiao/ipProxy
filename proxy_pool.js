@@ -40,7 +40,7 @@ const clearN = function (l) {
         var ip = ips;
       } else if (index === 1) {
         var port = ips;
-      } else if (index === 4) {
+      } else if (index === 3) {
         var type = ips;
       }
       index += 1;
