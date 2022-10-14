@@ -147,6 +147,10 @@ const ipFetch = function () {
         resolve()
       }
     })
+
+    Promise.all(arr).then(function () {
+      resolve()
+    })
   })
 }
 
