@@ -18,10 +18,11 @@ db.run(
 );
 
 const useragent =
-  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36";
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.42";
 
 const headers = {
   "User-Agent": useragent,
+  "Host": "www.kuaidaili.com"
 };
 
 //添加数据文件
@@ -79,7 +80,7 @@ const requestProxy = function (options) {
         loadHtml(body);
         resolve();
       } else {
-        console.log("链接失败", response, err);
+        console.log("链接失败", err, response.statusCode);
         resolve();
       }
     });
@@ -98,7 +99,7 @@ const ipUrl = function (resolve) {
 
   return new Promise((resolve, reject) => {
     for (let i = 1; i <= 5; i++) {
-      options.url = url + i;
+      options.url = url + i + '/';
       arr.push(requestProxy(options));
     }
     Promise.all(arr).then(function () {
