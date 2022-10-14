@@ -184,7 +184,7 @@ const check = function (proxy, headers) {
   return new Promise((resolve, reject) => {
     request(
       {
-        url: "http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js",
+        url: "http://m.ctrip.com",
         proxy: `${proxy.type.toLowerCase()}://${proxy.ip}:${proxy.port}`,
         strictSSL: false,
         rejectUnauthorized: false,
