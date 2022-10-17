@@ -83,7 +83,7 @@ app.all("/", (req, res) => {
         .end((err, response) => {
           if (err) {
             console.log('请求失败', err);
-            callback(500, "服务器错误");
+            callback(500, '{"msg": "请求失败", "err": ' + JSON.stringify(err) + '}');
           } else {
             callback(response.statusCode, response.text);
           }

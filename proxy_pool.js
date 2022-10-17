@@ -118,7 +118,7 @@ const ipFetch = function () {
   console.log("爬取ip中...")
   return new Promise((resolve, reject) => {
     request(options, function (err, response, body) {
-      if (err === null && response.statusCode === 200) {
+      if (err === null && response && response.statusCode === 200) {
         body
           .toString()
           .split("\n")
