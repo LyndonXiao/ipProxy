@@ -2,6 +2,7 @@ const proxy = require("./proxy_pool.js");
 const superagent = require("superagent");
 const querystring = require("querystring");
 const express = require("express");
+const userAgents = require("./userAgents.js");
 
 require("superagent-proxy")(superagent);
 
@@ -20,8 +21,7 @@ app.all("/", (req, res) => {
 
   let req_url = req.query.req_url;
   let headers = {
-    "User-Agent":
-      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.122 Safari/537.36",
+    "User-Agent": userAgents[parseInt(Math.random() * userAgents.length)],
   };
   if (req.headers["Content-Type"]) {
     headers["Content-Type"] = req.headers["Content-Type"];
