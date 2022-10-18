@@ -49,7 +49,7 @@ const clearN = function (l) {
     "select * from proxy where ip = ? and port = ?",
     [ip, port],
     (err, res) => {
-      if (!err) {
+      if (!err && !res) {
         console.log("爬取ip:" + ip)
         insertDb(ip, port, type)
       }
@@ -131,8 +131,8 @@ const ipFetch = function () {
                 "select * from proxy where ip = ? and port = ?",
                 [ip, port],
                 (err, res) => {
-                  if (!err) {
-                    console.log("爬取ip:" + ip)
+                  if (!err && !res) {
+                    console.log("添加ip:" + ip)
                     insertDb(ip, port, type)
                   }
                 }
