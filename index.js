@@ -60,7 +60,7 @@ app.all("/", (req, res) => {
       } else {
         const ip = ips[Math.floor(Math.random() * ips.length)];
         options.proxy = `${ip.type.toLowerCase()}://${ip.ip}:${ip.port}`;
-        console.log(options.proxy);
+        console.log('代理', options.proxy);
 
         requestUrl(options, (statusCode, body) => {
           res.status(statusCode).send(body).end();
@@ -81,9 +81,9 @@ app.all("/", (req, res) => {
         .send(body)
         .retry(2)
         .end((err, response) => {
-          if (err) {
+          if (err || !response) {
             console.log('请求失败', err);
-            callback(500, '{"msg": "请求失败", "err": ' + JSON.stringify(err) + '}');
+            callback(500, '{"msg": "请求失败", "err": ' + JSON.stringify({err, response}) + '}');
           } else {
             callback(response.statusCode, response.text);
           }
@@ -96,9 +96,9 @@ app.all("/", (req, res) => {
         .set(headers)
         .retry(2)
         .end((err, response) => {
-          if (err) {
+          if (err || !response) {
             console.log('请求失败', err);
-            callback(500, "服务器错误");
+            callback(500, '{"msg": "请求失败", "err": ' + JSON.stringify({err, response}) + '}');
           } else {
             callback(response.statusCode, response.text);
           }

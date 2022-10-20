@@ -77,7 +77,7 @@ const requestProxy = function (options) {
         loadHtml(body)
         resolve()
       } else {
-        console.log("链接失败", err, response.statusCode)
+        console.log("链接失败", err, response)
         resolve()
       }
     })
@@ -142,7 +142,7 @@ const ipFetch = function () {
 
         resolve()
       } else {
-        console.log("链接失败", err, response.statusCode)
+        console.log("链接失败", err, response)
         resolve()
       }
     })
