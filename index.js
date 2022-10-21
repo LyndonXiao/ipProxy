@@ -84,10 +84,31 @@ app.all("/", (req, res) => {
         if (!err && response && response.statusCode == 200) {
           callback(response.statusCode, body);
         } else {
-          console.log(err)
-          delete options.proxy;
+          console.log('代理请求失败', err)
           // 不代理试试
-          proxyRequest2(options, callback)
+          noProxyRequest(options, callback)
+        }
+      }
+    )
+  }
+
+  const noProxyRequest = (options, callback) => {
+    const {url, method, body, headers} = options;
+    request(
+      {
+        url,
+        method,
+        body: JSON.stringify(body),
+        headers,
+        strictSSL: false,
+        rejectUnauthorized: false
+      },
+      function (err, response, body) {
+        if (!err && response && response.statusCode == 200) {
+          callback(response.statusCode, body);
+        } else {
+          console.log('无代理请求失败', err)
+          callback(500, '{"msg": "请求失败", "err": ' + JSON.stringify({err, response}) + '}');
         }
       }
     )
