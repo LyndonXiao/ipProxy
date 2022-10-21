@@ -3,6 +3,7 @@ const superagent = require("superagent");
 const querystring = require("querystring");
 const express = require("express");
 const userAgents = require("./userAgents.js");
+const request = require("request")
 
 require("superagent-proxy")(superagent);
 
@@ -40,21 +41,20 @@ app.all("/", (req, res) => {
     body: req.body,
   };
 
-  proxy.check();
-
-  proxy.ips("HTTP", (err, ips) => {
+  proxy.ips("http", (err, ips) => {
     if (err) {
       console.log("sql err", err);
 
-      requestUrl(options, (statusCode, body) => {
+      proxyRequest(options, (statusCode, body) => {
         res.status(statusCode).send(body).end();
       });
     } else {
+      console.log('ips', ips);
       if (ips.length <= 0) {
         console.log("no proxy ip");
         proxy.run();
 
-        requestUrl(options, (statusCode, body) => {
+        proxyRequest(options, (statusCode, body) => {
           res.status(statusCode).send(body).end();
         });
       } else {
@@ -62,19 +62,42 @@ app.all("/", (req, res) => {
         options.proxy = `${ip.type.toLowerCase()}://${ip.ip}:${ip.port}`;
         console.log('代理', options.proxy);
 
-        requestUrl(options, (statusCode, body) => {
+        proxyRequest(options, (statusCode, body) => {
           res.status(statusCode).send(body).end();
         });
       }
     }
   });
 
-  const requestUrl = (options, callback) => {
-    const { url, method, headers, body, proxy, timeout = 2000 } = options;
+  const proxyRequest = (options, callback) => {
+    const {url, method, body, headers, proxy: proxyUrl} = options;
+    request(
+      {
+        url,
+        method,
+        body: JSON.stringify(body),
+        headers,
+        proxy: proxyUrl,
+        strictSSL: false,
+        rejectUnauthorized: false
+      },
+      function (err, response, body) {
+        if (!err && response && response.statusCode == 200) {
+          callback(response.statusCode, body);
+        } else {
+          console.log(err)
+          callback(500, '{"msg": "请求失败", "err": ' + JSON.stringify({err, response}) + '}');
+        }
+      }
+    )
+  }
+
+  const proxyRequest2 = (options, callback) => {
+    const { url, method, headers, body, proxy: proxyUrl, timeout = 2000 } = options;
 
     if (proxy)
       superagent(method, url)
-        .proxy(proxy)
+        .proxy(proxyUrl)
         .timeout(timeout)
         .set(headers)
         .redirects(2)

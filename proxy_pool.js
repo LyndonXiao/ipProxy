@@ -2,6 +2,7 @@ const request = require("request")
 const cheerio = require("cheerio")
 const sqlite3 = require("sqlite3")
 const userAgents = require("./userAgents")
+const { options } = require("superagent")
 
 const db = new sqlite3.Database("Proxy.db", (err) => {
   if (!err) {
@@ -132,7 +133,7 @@ const ipFetch = function () {
                 [ip, port],
                 (err, res) => {
                   if (!err && !res) {
-                    console.log("添加ip:" + ip)
+                    // console.log("添加ip:" + ip)
                     insertDb(ip, port, type)
                   }
                 }
@@ -184,11 +185,11 @@ const check = function (proxy, headers) {
   return new Promise((resolve, reject) => {
     request(
       {
-        url: "http://m.ctrip.com",
+        url: "https://m.ctrip.com/restapi/soa2/21710/EstimatePrice",
         proxy: `${proxy.type.toLowerCase()}://${proxy.ip}:${proxy.port}`,
         strictSSL: false,
         rejectUnauthorized: false,
-        method: "GET",
+        method: "POST",
         timeout: 2000,
         headers,
       },
@@ -210,7 +211,7 @@ const removeIp = function (ip) {
     if (err) {
       console.log("删除失败", err)
     } else {
-      console.log("成功删除" + ip)
+      // console.log("成功删除" + ip)
     }
   })
 }
