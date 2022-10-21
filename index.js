@@ -85,7 +85,9 @@ app.all("/", (req, res) => {
           callback(response.statusCode, body);
         } else {
           console.log(err)
-          callback(500, '{"msg": "请求失败", "err": ' + JSON.stringify({err, response}) + '}');
+          delete options.proxy;
+          // 不代理试试
+          proxyRequest2(options, callback)
         }
       }
     )

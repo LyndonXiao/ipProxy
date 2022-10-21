@@ -153,7 +153,6 @@ const ipFetch = function () {
 //从数据库提取所有ip
 const allIp = function (callback, type) {
   if (type) {
-    console.log("type", type)
     return db.all("select * from proxy where type = ?", [type], callback)
   } else return db.all("select * from proxy", callback)
 }
