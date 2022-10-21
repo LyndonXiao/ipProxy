@@ -49,7 +49,6 @@ app.all("/", (req, res) => {
         res.status(statusCode).send(body).end();
       });
     } else {
-      console.log('ips', ips);
       if (ips.length <= 0) {
         console.log("no proxy ip");
         proxy.run();
