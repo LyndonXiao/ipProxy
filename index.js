@@ -136,3 +136,7 @@ app.get("/refresh", (req, res) => {
 app.listen(3030, () =>
   console.log("ip proxy server 启动成功，监听 3030 中...")
 );
+
+setTimeout(() => {
+  proxy.check();
+}, 7200000)
