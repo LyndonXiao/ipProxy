@@ -59,6 +59,7 @@ app.all("/", (req, res) => {
       } else {
         const ip = ips[Math.floor(Math.random() * ips.length)];
         options.proxy = `${ip.type.toLowerCase()}://${ip.ip}:${ip.port}`;
+        options.proxyIp = ip.ip;
         console.log('代理', options.proxy);
 
         proxyRequest(options, (statusCode, body) => {
@@ -69,7 +70,7 @@ app.all("/", (req, res) => {
   });
 
   const proxyRequest = (options, callback) => {
-    const {url, method, body, headers, proxy: proxyUrl} = options;
+    const {url, method, body, headers, proxy: proxyUrl, proxyIp} = options;
     request(
       {
         url,
@@ -82,9 +83,11 @@ app.all("/", (req, res) => {
       },
       function (err, response, body) {
         if (!err && response && response.statusCode == 200) {
+          console.log('代理请求成功');
           callback(response.statusCode, body);
         } else {
           console.log('代理请求失败', err)
+          proxy.removeIp(proxyIp)
           // 不代理试试
           noProxyRequest(options, callback)
         }
@@ -105,6 +108,7 @@ app.all("/", (req, res) => {
       },
       function (err, response, body) {
         if (!err && response && response.statusCode == 200) {
+          console.log('无代理请求成功');
           callback(response.statusCode, body);
         } else {
           console.log('无代理请求失败', err)

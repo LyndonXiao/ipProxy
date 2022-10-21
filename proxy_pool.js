@@ -225,6 +225,10 @@ exports.check = function () {
   runIp()
 }
 
+exports.removeIp = function(ip) {
+  removeIp(ip)
+}
+
 exports.ips = function (type, callback = null) {
   if (typeof type === "function") {
     callback = type
