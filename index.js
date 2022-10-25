@@ -57,6 +57,7 @@ app.all("/", (req, res) => {
           res.status(statusCode).send(body).end();
         });
       } else {
+        console.log("ips:" + ips.length);
         const ip = ips[Math.floor(Math.random() * ips.length)];
         options.proxy = `${ip.type.toLowerCase()}://${ip.ip}:${ip.port}`;
         options.proxyIp = ip.ip;
