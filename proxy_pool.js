@@ -3,19 +3,20 @@ const cheerio = require("cheerio")
 const sqlite3 = require("sqlite3")
 const userAgents = require("./userAgents")
 const { options } = require("superagent")
+const log = require("./log")
 
 const db = new sqlite3.Database("Proxy.db", (err) => {
   if (!err) {
-    console.log("已连接ip池")
+    log("已连接ip池")
   } else {
-    console.log("链接代理池失败", err)
+    log("链接代理池失败", err)
   }
 })
 
 db.run(
   "CREATE TABLE IF NOT EXISTS proxy(ip char(15), port char(15), type char(15))",
   (err) => {
-    if (err) console.log("建表失败", err)
+    if (err) log("建表失败", err)
   }
 )
 
@@ -51,7 +52,7 @@ const clearN = function (l) {
     [ip, port],
     (err, res) => {
       if (!err && !res) {
-        console.log("爬取ip:" + ip)
+        log("爬取ip:" + ip)
         insertDb(ip, port, type)
       }
     }
@@ -78,7 +79,7 @@ const requestProxy = function (options) {
         loadHtml(body)
         resolve()
       } else {
-        console.log("链接失败", err, response)
+        log("链接失败", err, response)
         resolve()
       }
     })
@@ -116,7 +117,7 @@ const ipFetch = function () {
     method: "GET",
     headers,
   }
-  console.log("爬取ip中...")
+  log("爬取ip中...")
   return new Promise((resolve, reject) => {
     request(options, function (err, response, body) {
       if (err === null && response && response.statusCode === 200) {
@@ -133,7 +134,7 @@ const ipFetch = function () {
                 [ip, port],
                 (err, res) => {
                   if (!err && !res) {
-                    // console.log("添加ip:" + ip)
+                    // log("添加ip:" + ip)
                     insertDb(ip, port, type)
                   }
                 }
@@ -143,7 +144,7 @@ const ipFetch = function () {
 
         resolve()
       } else {
-        console.log("链接失败", err, response)
+        log("链接失败", err, response)
         resolve()
       }
     })
@@ -166,9 +167,9 @@ const Proxys = function (ip, port, type) {
 
 //提取所有ip，通过check函数检查
 const runIp = function () {
-  console.log('检查ip中...');
+  log('检查ip中...');
   allIp((err, response) => {
-    if (err) console.log("查询错误", err)
+    if (err) log("查询错误", err)
     else {
       for (let i = 0; i < response.length; i++) {
         let ip = response[i]
@@ -208,9 +209,9 @@ const check = function (proxy, headers) {
 const removeIp = function (ip) {
   db.run(`DELETE FROM proxy WHERE ip = '${ip}'`, function (err) {
     if (err) {
-      console.log("删除失败", err)
+      log("删除失败", err)
     } else {
-      // console.log("成功删除" + ip)
+      // log("成功删除" + ip)
     }
   })
 }

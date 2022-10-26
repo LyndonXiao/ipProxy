@@ -3,7 +3,8 @@ const superagent = require("superagent");
 const querystring = require("querystring");
 const express = require("express");
 const userAgents = require("./userAgents.js");
-const request = require("request")
+const request = require("request");
+const log = require("./log.js");
 
 require("superagent-proxy")(superagent);
 
@@ -43,25 +44,25 @@ app.all("/", (req, res) => {
 
   proxy.ips("http", (err, ips) => {
     if (err) {
-      console.log("sql err", err);
+      log("sql err", err);
 
       proxyRequest(options, (statusCode, body) => {
         res.status(statusCode).send(body).end();
       });
     } else {
       if (ips.length <= 0) {
-        console.log("no proxy ip");
+        log("no proxy ip");
         proxy.run();
 
         proxyRequest(options, (statusCode, body) => {
           res.status(statusCode).send(body).end();
         });
       } else {
-        console.log("ips:" + ips.length);
+        log("ips:" + ips.length);
         const ip = ips[Math.floor(Math.random() * ips.length)];
         options.proxy = `${ip.type.toLowerCase()}://${ip.ip}:${ip.port}`;
         options.proxyIp = ip.ip;
-        console.log('代理', options.proxy);
+        log('代理', options.proxy);
 
         proxyRequest(options, (statusCode, body) => {
           res.status(statusCode).send(body).end();
@@ -84,10 +85,10 @@ app.all("/", (req, res) => {
       },
       function (err, response, body) {
         if (!err && response && response.statusCode == 200) {
-          console.log('代理请求成功');
+          log('代理请求成功');
           callback(response.statusCode, body);
         } else {
-          console.log('代理请求失败', err)
+          log('代理请求失败', err)
           proxy.removeIp(proxyIp)
           // 不代理试试
           noProxyRequest(options, callback)
@@ -109,10 +110,10 @@ app.all("/", (req, res) => {
       },
       function (err, response, body) {
         if (!err && response && response.statusCode == 200) {
-          console.log('无代理请求成功');
+          log('无代理请求成功');
           callback(response.statusCode, body);
         } else {
-          console.log('无代理请求失败', err)
+          log('无代理请求失败', err)
           callback(500, '{"msg": "请求失败", "err": ' + JSON.stringify({err, response}) + '}');
         }
       }
@@ -132,7 +133,7 @@ app.all("/", (req, res) => {
         .retry(2)
         .end((err, response) => {
           if (err || !response) {
-            console.log('请求失败', err);
+            log('请求失败', err);
             callback(500, '{"msg": "请求失败", "err": ' + JSON.stringify({err, response}) + '}');
           } else {
             callback(response.statusCode, response.text);
@@ -147,7 +148,7 @@ app.all("/", (req, res) => {
         .retry(2)
         .end((err, response) => {
           if (err || !response) {
-            console.log('请求失败', err);
+            log('请求失败', err);
             callback(500, '{"msg": "请求失败", "err": ' + JSON.stringify({err, response}) + '}');
           } else {
             callback(response.statusCode, response.text);
@@ -162,7 +163,7 @@ app.get("/refresh", (req, res) => {
 });
 
 app.listen(3030, () =>
-  console.log("ip proxy server 启动成功，监听 3030 中...")
+  log("ip proxy server 启动成功，监听 3030 中...")
 );
 
 setTimeout(() => {
