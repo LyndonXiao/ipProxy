@@ -151,6 +151,47 @@ const ipFetch = function () {
   })
 }
 
+// 爬取代理ip
+const ipFetch2 = function () {
+  const url = "http://api.89ip.cn/tqdl.html?api=1&num=60&port=&address=&isp="
+
+  const options = {
+    url: url,
+    method: "GET",
+    headers,
+  }
+  log("爬取ip2中...")
+  return new Promise((resolve, reject) => {
+    request(options, function (err, response, body) {
+      if (err === null && response && response.statusCode === 200) {
+        const results = body
+          .toString().match(/.*?\..*?\..*?\..*?:.*?<br\>/g)
+        
+          results.forEach(function (i) {
+              let arr = i.replace("<br>", "").split(":")
+              const ip = arr[0], port = arr[1], type = "http"
+
+              db.get(
+                "select * from proxy where ip = ? and port = ?",
+                [ip, port],
+                (err, res) => {
+                  if (!err && !res) {
+                    // log("添加ip:" + ip)
+                    insertDb(ip, port, type)
+                  }
+                }
+              )
+          })
+
+        resolve()
+      } else {
+        log("链接失败", err, response)
+        resolve()
+      }
+    })
+  })
+}
+
 //从数据库提取所有ip
 const allIp = function (callback, type) {
   if (type) {
@@ -219,6 +260,7 @@ const removeIp = function (ip) {
 exports.run = async function () {
   // await ipUrl()
   await ipFetch()
+  await ipFetch2()
   await runIp()
 }
 
