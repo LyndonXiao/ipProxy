@@ -31,6 +31,9 @@ app.all("/", (req, res) => {
   if (req.headers["Cookie"]) {
     headers["Cookie"] = req.headers["Cookie"];
   }
+  if (req.headers["token"]) {
+    headers["token"] = req.headers["token"];
+  }
 
   delete req.query["req_url"];
 
